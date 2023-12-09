@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../models/details_model.dart';
@@ -39,6 +39,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meal Detail"),
+        centerTitle: true,
       ),
       body: FutureBuilder<List<DetailMeal>>(
         future: _meals,
@@ -197,6 +198,32 @@ class _DetailPageState extends State<DetailPage> {
                   ),
                   const SizedBox(height: 10),
                   Text("${snapshot.data![0].strInstructions}"),
+                  const SizedBox(height: 30,),
+                  ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Colors.green),
+                      ),
+                      onPressed: () {
+                        _launcher("${snapshot.data![0].strYoutube}");
+                        print("tes");
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.play_arrow,
+                            color: Colors.white,
+                          ),
+                          Text(
+                            "Watch Tutorial",
+                            style: TextStyle(
+                                color: Colors.white
+                            ),
+                          ),
+                        ],
+                      )
+                  ),
+                  SizedBox(height: 20,),
                 ],
               ),
             );
@@ -204,5 +231,11 @@ class _DetailPageState extends State<DetailPage> {
         },
       ),
     );
+  }
+  Future<void> _launcher(String url) async {
+    final Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception("Gagal membuka url : $_url");
+    }
   }
 }
